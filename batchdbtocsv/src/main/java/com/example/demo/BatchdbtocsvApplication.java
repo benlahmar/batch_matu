@@ -15,8 +15,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 @EnableBatchProcessing
 public class BatchdbtocsvApplication implements CommandLineRunner{
 
-	
-	@Autowired
+		@Autowired
 	private JobLauncher jobLauncher;
 
 	@Autowired
