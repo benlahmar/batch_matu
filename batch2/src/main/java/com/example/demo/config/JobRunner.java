@@ -16,6 +16,9 @@ public class JobRunner implements CommandLineRunner {
 
     @Autowired   
     private Job jobA;
+    
+    @Autowired   
+    private Job jobB;
 
     @Override    
     public void run(String... args) throws Exception {
@@ -25,7 +28,7 @@ public class JobRunner implements CommandLineRunner {
             .addLong("time", System.currentTimeMillis())
             .toJobParameters();
 
-    jobLauncher.run(jobA, jobParameters);
+    jobLauncher.run(jobB, jobParameters);
     System.out.println("JOB Execution completed!");
     }
 }

@@ -32,7 +32,15 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+			
 		</dependency>
+
+		
+<!-- https://mvnrepository.com/artifact/org.springframework/spring-oxm -->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-oxm</artifactId>
+</dependency>
 
 		<dependency>
 			<groupId>com.mysql</groupId>

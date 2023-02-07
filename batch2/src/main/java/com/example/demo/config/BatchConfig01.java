@@ -1,5 +1,8 @@
 package com.example.demo.config;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.JobParameters;
@@ -15,15 +18,21 @@ import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
+import org.springframework.batch.item.xml.StaxEventItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.oxm.jaxb.Jaxb2Marshaller;
+import org.springframework.oxm.xstream.XStreamMarshaller;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import com.example.demo.ProduitListener;
 import com.example.demo.entities.Produit;
+import com.example.demo.entities.User;
+import com.example.demo.entities.Userxml;
 import com.example.demo.repo.IProduit;
+import com.example.demo.repo.IUser;
 
 
 @Configuration
@@ -55,7 +64,31 @@ public class BatchConfig01 {
        return reader;
     }
 
-  
+
+    //reader for xml
+    @Bean
+    public StaxEventItemReader<Userxml> reader2()
+	{
+    	 StaxEventItemReader<Userxml> reader = new StaxEventItemReader<>();
+    	 reader.setResource(new ClassPathResource("/produits.xml"));
+         reader.setFragmentRootElementName("user");
+         reader.setUnmarshaller(newCustomerDataMarshaller());
+         return reader;
+	}
+    
+    @Bean
+	 public Jaxb2Marshaller newCustomerDataMarshaller() {
+	        Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
+	        marshaller.setClassesToBeBound(Userxml.class);
+	        return marshaller;
+	    }
+    @Bean
+    CustomerProcessor customerProcessor() {
+        return new CustomerProcessor();
+    }
+    
+
+	 
     @Autowired
     IProduit repository;
 
@@ -68,6 +101,23 @@ public class BatchConfig01 {
          repository.saveAll(Produits);
        };
     }
+
+//write xml
+    @Autowired
+    IUser urepo;
+    @Bean
+    public ItemWriter<User> writer2(){
+       // return new ProduitItemWriter(); // Using lambda expression code instead of a separate implementation
+       return users -> {
+         System.out.println("Saving Produit Records: " +users);
+         urepo.saveAll(users);
+         //com/thoughtworks/xstream/core/DefaultConverterLookup
+         
+       };
+    }
+
+    
+    
 
     //Processor class Object
     @Bean
@@ -103,7 +153,16 @@ public class BatchConfig01 {
        ;
     }
 
-   
+    @Bean
+    public Step stepB() {
+       return sbf.get("stepB")
+               .<Userxml,User>chunk(1)
+               .reader(reader2())
+               .processor(customerProcessor())
+               .writer(writer2())
+               .build() 
+       ;
+    }
     @Autowired
     private JobBuilderFactory jbf;
 
@@ -125,7 +184,7 @@ public class BatchConfig01 {
        return jbf.get("jobB")
               .incrementer(new RunIdIncrementer())
               .listener(listener())
-              .start(stepA())
+              .start(stepB())
            // .next(stepB()) 
            // .next(stepC())
               .build()

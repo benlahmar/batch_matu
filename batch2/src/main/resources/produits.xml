@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<users>
+<user>
+<id>12</id>
+<nom>aaa</nom>
+
+            <address>
+                <zip-code>ZC</zip-code>
+                <state-code>SC</state-code>
+                <country>copuntyhr</country>
+                <street-address>Str Adr</street-address>
+                <city>city</city>
+            </address>
+            
+</user>
+<user >
+<id>13</id>
+<nom>bbb</nom>
+
+            <address>
+                <zip-code>ZC</zip-code>
+                <state-code>SC</state-code>
+                <country>copuntyhr</country>
+                <street-address>Str Adr</street-address>
+                <city>city</city>
+            </address>
+         
+</user>
+<user>
+<id>14</id>
+<nom>alpha matu</nom>
+ <address>
+                <zip-code>ZC</zip-code>
+                <state-code>SC</state-code>
+                <country>copuntyhr</country>
+                <street-address>Str Adr</street-address>
+                <city>city</city>
+            </address>
+</user>
+</users>
+
